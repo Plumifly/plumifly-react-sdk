@@ -1,12 +1,12 @@
 {
   "name": "plumifly-sdk",
-  "version": "1.0.0",
+  "version": "0.1.0",
+  "description": "A powerful SDK for fetching and rendering blog content in Next.js and React applications.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist",
-    "src/styles"
+    "dist"
   ],
   "exports": {
     ".": {
@@ -18,7 +18,8 @@
   },
   "scripts": {
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
-    "build": "tsup src/index.ts --format esm,cjs --dts"
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
@@ -35,5 +36,18 @@
   },
   "dependencies": {
     "axios": "^1.7.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/plumifly-sdk.git"
+  },
+  "keywords": [
+    "nextjs",
+    "react",
+    "sdk",
+    "blog",
+    "typescript"
+  ],
+  "author": "Your Name <youremail@domain.com>",
+  "license": "MIT"
 }
