@@ -1,4 +1,3 @@
-// src/config/index.ts
 import { PlumiflyConfig, PlumiflyInstance } from '../types';
 
 let instance: PlumiflyInstance | null = null;

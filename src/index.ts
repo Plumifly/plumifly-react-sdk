@@ -1,5 +1,4 @@
-// src/index.ts
-import './styles/global.css';   // Add this at the top
+import './styles/global.css';
 export { initPlumifly, getPlumiflyInstance } from './config';
 export { BlogList, BlogPost } from './components';
 export { fetchBlogPosts, fetchBlogPost } from './api/client';

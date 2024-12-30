@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react';
 import { BlogPost as BlogPostType } from '../../types';
 

@@ -1,4 +1,3 @@
-// src/types/index.ts
 export interface PlumiflyConfig {
   apiKey: string;
   baseUrl?: string;
