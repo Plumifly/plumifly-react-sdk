@@ -16,5 +16,4 @@ export default defineConfig({
   loader: {
     '.css': 'css'
   },
-  inject: ['./src/styles/inject-css.ts']
 })

@@ -1,120 +1,161 @@
 import React, { CSSProperties } from "react";
-import { BlogPost, BlogListResponse } from "../../types";
-import { Image as ImageIcon } from "lucide-react";
+import { BlogListResponse } from "../../types";
+import { Image as ImageIcon, ArrowLeft } from "lucide-react";
 
-const styles: Record<string, CSSProperties> = {
-  container: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "40px 20px",
-  },
-  header: {
-    marginBottom: "40px",
-  },
-  heading: {
-    fontSize: "2.5rem",
-    fontWeight: "500",
-    color: "#111",
-    margin: "0",
-    letterSpacing: "-0.02em",
-  },
-  subheading: {
-    fontSize: "1rem",
-    color: "#666",
-    margin: "8px 0 0 0",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-    gap: "32px",
-    width: "100%",
-  },
-  article: {
-    display: "flex",
-    flexDirection: "column" as const,
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    backgroundColor: "white",
-    borderRadius: "12px",
-    overflow: "hidden",
-    border: "1px solid #eee",
-    height: "100%",
-  },
-  imageContainer: {
-    position: "relative" as const,
-    width: "100%",
-    paddingBottom: "56.25%",
-    backgroundColor: "#f4f4f4",
-    overflow: "hidden",
-  },
-  image: {
-    position: "absolute" as const,
-    top: "0",
-    left: "0",
-    width: "100%",
-    height: "100%",
-    objectFit: "cover" as const,
-    transition: "transform 0.3s ease",
-  },
-  placeholderContainer: {
-    position: "absolute" as const,
-    top: "0",
-    left: "0",
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f4f4f4",
-    color: "#999",
-  },
-  content: {
-    padding: "24px",
-    display: "flex",
-    flexDirection: "column" as const,
-    height: "100%",
-    justifyContent: "space-between",
-  },
-  titleContainer: {
-    marginBottom: "16px",
-  },
-  title: {
-    fontSize: "20px",
-    fontWeight: "600",
-    color: "#111",
-    marginBottom: "8px",
-    lineHeight: "1.3",
-  },
-  description: {
-    fontSize: "15px",
-    lineHeight: "1.5",
-    color: "#666",
-    marginBottom: "8px",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical" as const,
-    maxHeight: "3em",
-  },
-  metadata: {
-    fontSize: "14px",
-    color: "#777",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    marginTop: "auto",
-    paddingTop: "16px",
-    borderTop: "1px solid #eee",
-  },
-};
+interface BlogTheme {
+  colors?: {
+    primary?: string;
+    secondary?: string;
+    text?: string;
+    background?: string;
+    accent?: string;
+  };
+  fonts?: {
+    primary?: string;
+    secondary?: string;
+  };
+  spacing?: {
+    small?: string;
+    medium?: string;
+    large?: string;
+  };
+}
 
 interface BlogListProps {
   data: BlogListResponse;
+  theme?: BlogTheme;
+  onBack?: () => void;
 }
 
-export function BlogList({ data }: BlogListProps) {
+export function BlogList({ data, theme, onBack }: BlogListProps) {
   const { project, blogs } = data;
+
+  const styles: Record<string, CSSProperties> = {
+    container: {
+      maxWidth: "1200px",
+      margin: "0 auto",
+      padding: theme?.spacing?.large || "40px 20px",
+      backgroundColor: theme?.colors?.background || "white",
+    },
+    header: {
+      marginBottom: theme?.spacing?.large || "40px",
+    },
+    backButton: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "4px",
+      color: theme?.colors?.secondary || "#666",
+      fontSize: "14px",
+      cursor: "pointer",
+      border: "none",
+      background: "none",
+      padding: "8px",
+      borderRadius: "4px",
+      transition: "color 0.2s ease",
+      marginBottom: theme?.spacing?.medium || "16px",
+    },
+    heading: {
+      fontSize: "2.5rem",
+      fontWeight: "500",
+      color: theme?.colors?.text || "#111",
+      margin: "0",
+      letterSpacing: "-0.02em",
+      fontFamily: theme?.fonts?.primary,
+    },
+    subheading: {
+      fontSize: "1rem",
+      color: theme?.colors?.secondary || "#666",
+      margin: "8px 0 0 0",
+      fontFamily: theme?.fonts?.secondary,
+    },
+    grid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+      gap: theme?.spacing?.large || "32px",
+      width: "100%",
+    },
+    article: {
+      display: "flex",
+      flexDirection: "column",
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+      backgroundColor: theme?.colors?.background || "white",
+      borderRadius: "12px",
+      overflow: "hidden",
+      border: `1px solid ${theme?.colors?.secondary || "#eee"}`,
+      height: "100%",
+    },
+    imageContainer: {
+      position: "relative",
+      width: "100%",
+      paddingBottom: "56.25%",
+      backgroundColor: theme?.colors?.secondary || "#f4f4f4",
+      overflow: "hidden",
+    },
+    image: {
+      position: "absolute",
+      top: "0",
+      left: "0",
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      transition: "transform 0.3s ease",
+    },
+    placeholderContainer: {
+      position: "absolute",
+      top: "0",
+      left: "0",
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme?.colors?.secondary || "#f4f4f4",
+      color: theme?.colors?.primary || "#999",
+    },
+    content: {
+      padding: theme?.spacing?.medium || "24px",
+      display: "flex",
+      flexDirection: "column",
+      height: "100%",
+      justifyContent: "space-between",
+    },
+    titleContainer: {
+      marginBottom: theme?.spacing?.medium || "16px",
+    },
+    title: {
+      fontSize: "20px",
+      fontWeight: "600",
+      color: theme?.colors?.text || "#111",
+      marginBottom: theme?.spacing?.small || "8px",
+      lineHeight: "1.3",
+      fontFamily: theme?.fonts?.primary,
+    },
+    description: {
+      fontSize: "15px",
+      lineHeight: "1.5",
+      color: theme?.colors?.secondary || "#666",
+      marginBottom: theme?.spacing?.small || "8px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      display: "-webkit-box",
+      WebkitLineClamp: 2,
+      WebkitBoxOrient: "vertical",
+      maxHeight: "3em",
+      fontFamily: theme?.fonts?.secondary,
+    },
+    metadata: {
+      fontSize: "14px",
+      color: theme?.colors?.secondary || "#777",
+      display: "flex",
+      alignItems: "center",
+      gap: theme?.spacing?.small || "8px",
+      marginTop: "auto",
+      paddingTop: theme?.spacing?.medium || "16px",
+      borderTop: `1px solid ${theme?.colors?.secondary || "#eee"}`,
+      fontFamily: theme?.fonts?.secondary,
+    },
+  };
 
   const handleClick = (slug: string) => {
     const basePath = window.location.pathname.split("/blog")[0];
@@ -130,7 +171,7 @@ export function BlogList({ data }: BlogListProps) {
 
     article.style.transform = isEntering ? "translateY(-4px)" : "translateY(0)";
     article.style.boxShadow = isEntering
-      ? "0 4px 12px rgba(0,0,0,0.1)"
+      ? `0 4px 12px ${theme?.colors?.secondary || "rgba(0,0,0,0.1)"}` 
       : "none";
 
     if (image) {
@@ -150,6 +191,17 @@ export function BlogList({ data }: BlogListProps) {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
+        {onBack && (
+          <button 
+            style={styles.backButton}
+            onClick={onBack}
+            onMouseEnter={e => e.currentTarget.style.color = theme?.colors?.text || "#111"}
+            onMouseLeave={e => e.currentTarget.style.color = theme?.colors?.secondary || "#666"}
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
+        )}
         <h1 style={styles.heading}>Latest Articles</h1>
         {project.name && <p style={styles.subheading}>{project.name}</p>}
       </header>
@@ -172,7 +224,7 @@ export function BlogList({ data }: BlogListProps) {
                 />
               ) : (
                 <div style={styles.placeholderContainer}>
-                  <ImageIcon size={32} />
+                  <ImageIcon size={32} color={theme?.colors?.primary} />
                 </div>
               )}
             </div>

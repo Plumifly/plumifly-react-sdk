@@ -1,5 +1,5 @@
 import React, { CSSProperties, ComponentProps } from 'react';
-import { BlogPost as BlogPostType } from '../../types';
+import { BlogPostTypes } from '../../types';
 import { ArrowLeft, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown, { Components } from 'react-markdown';
 
@@ -214,7 +214,7 @@ const markdownComponents: Components = {
 };
 
 interface BlogPostProps {
-  post: BlogPostType;
+  post: BlogPostTypes;
   onBack?: () => void;
 }
 
