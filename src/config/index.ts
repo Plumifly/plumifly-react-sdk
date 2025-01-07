@@ -14,7 +14,7 @@ export function initPlumifly(config: PlumiflyConfig): PlumiflyInstance {
 
   instance = {
     apiKey: config.apiKey,
-    baseUrl: config.baseUrl || 'http://localhost:3002/api/v1',
+    baseUrl: config.baseUrl || 'https://api.plumifly.com/api/v1',
     isInitialized: true,
   };
 
