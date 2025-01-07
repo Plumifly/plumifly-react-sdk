@@ -19,6 +19,8 @@ export interface BlogPost {
   createdAt: string;
   updatedAt: string;
   projectId?: string;
+  image_url?: string;
+  image_alt?: string;
 }
 
 export interface BlogPageProps {
