@@ -74,6 +74,9 @@ export interface BlogPostTypes {
   projectId?: string;
   image_url?: string;
   image_alt?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  publishedAt?: string;
   metadata?: {
     author?: string;
     tags?: string[];

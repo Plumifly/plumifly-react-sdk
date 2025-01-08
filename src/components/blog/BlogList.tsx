@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useState } from "react";
 import { BlogListResponse } from "../../types";
 import { Image as ImageIcon, ArrowLeft } from "lucide-react";
 
@@ -27,8 +27,13 @@ interface BlogListProps {
   onBack?: () => void;
 }
 
+interface ImageErrorState {
+  [key: string]: boolean;
+}
+
 export function BlogList({ data, theme, onBack }: BlogListProps) {
   const { project, blogs } = data;
+  const [imageErrors, setImageErrors] = useState<ImageErrorState>({});
 
   const styles: Record<string, CSSProperties> = {
     container: {
@@ -158,8 +163,17 @@ export function BlogList({ data, theme, onBack }: BlogListProps) {
   };
 
   const handleClick = (slug: string) => {
-    const basePath = window.location.pathname.split("/blog")[0];
-    window.location.href = `${basePath}/blog/${slug}`;
+    if (typeof window !== 'undefined') {
+      const basePath = window.location.pathname.split("/blog")[0];
+      window.location.href = `${basePath}/blog/${slug}`;
+    }
+  };
+
+  const handleImageError = (postId: string) => {
+    setImageErrors(prev => ({
+      ...prev,
+      [postId]: true
+    }));
   };
 
   const handleArticleHover = (
@@ -169,10 +183,12 @@ export function BlogList({ data, theme, onBack }: BlogListProps) {
     const article = e.currentTarget;
     const image = article.querySelector("img");
 
-    article.style.transform = isEntering ? "translateY(-4px)" : "translateY(0)";
-    article.style.boxShadow = isEntering
-      ? `0 4px 12px ${theme?.colors?.secondary || "rgba(0,0,0,0.1)"}` 
-      : "none";
+    if (article) {
+      article.style.transform = isEntering ? "translateY(-4px)" : "translateY(0)";
+      article.style.boxShadow = isEntering
+        ? `0 4px 12px ${theme?.colors?.secondary || "rgba(0,0,0,0.1)"}`
+        : "none";
+    }
 
     if (image) {
       image.style.transform = isEntering ? "scale(1.05)" : "scale(1)";
@@ -180,12 +196,17 @@ export function BlogList({ data, theme, onBack }: BlogListProps) {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(date);
+    try {
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }).format(date);
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString;
+    }
   };
 
   return (
@@ -195,15 +216,23 @@ export function BlogList({ data, theme, onBack }: BlogListProps) {
           <button 
             style={styles.backButton}
             onClick={onBack}
-            onMouseEnter={e => e.currentTarget.style.color = theme?.colors?.text || "#111"}
-            onMouseLeave={e => e.currentTarget.style.color = theme?.colors?.secondary || "#666"}
+            onMouseEnter={e => {
+              if (e.currentTarget) {
+                e.currentTarget.style.color = theme?.colors?.text || "#111";
+              }
+            }}
+            onMouseLeave={e => {
+              if (e.currentTarget) {
+                e.currentTarget.style.color = theme?.colors?.secondary || "#666";
+              }
+            }}
           >
             <ArrowLeft size={16} />
             Back
           </button>
         )}
         <h1 style={styles.heading}>Latest Articles</h1>
-        {project.name && <p style={styles.subheading}>{project.name}</p>}
+        {project?.name && <p style={styles.subheading}>{project.name}</p>}
       </header>
 
       <div style={styles.grid}>
@@ -216,11 +245,12 @@ export function BlogList({ data, theme, onBack }: BlogListProps) {
             onMouseLeave={(e) => handleArticleHover(e, false)}
           >
             <div style={styles.imageContainer}>
-              {post.image_url ? (
+              {post.imageUrl && !imageErrors[post.id] ? (
                 <img
-                  src={post.image_url}
-                  alt={post.image_alt || post.title}
+                  src={post.imageUrl}
+                  alt={post.imageAlt || post.title}
                   style={styles.image}
+                  onError={() => handleImageError(post.id)}
                 />
               ) : (
                 <div style={styles.placeholderContainer}>
@@ -231,11 +261,13 @@ export function BlogList({ data, theme, onBack }: BlogListProps) {
             <div style={styles.content}>
               <div style={styles.titleContainer}>
                 <h2 style={styles.title}>{post.title}</h2>
-                <p style={styles.description}>{post.description}</p>
+                {post.description && (
+                  <p style={styles.description}>{post.description}</p>
+                )}
               </div>
 
               <div style={styles.metadata}>
-                <span>{formatDate(post.createdAt)}</span>
+                <span>{formatDate(post.publishedAt || post.createdAt)}</span>
               </div>
             </div>
           </article>
